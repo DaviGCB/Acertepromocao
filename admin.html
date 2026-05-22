@@ -168,10 +168,10 @@
     </main>
 
     <script>
-        // Link relativo
-        const API_URL = '/api/promocoes';
+        const API_BASE = 'http://localhost:3000/api/promocoes';
         const IMAGE_FALLBACK = 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?q=80&w=600&auto=format&fit=crop';
 
+        // Lógica de Alternância das Abas
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -186,6 +186,9 @@
             }
         }
 
+        /* ==========================================================================
+           LÓGICA DO PREVIEW EM TEMPO REAL
+           ========================================================================== */
         const inputTitulo = document.getElementById('titulo');
         const inputDescricao = document.getElementById('descricao');
         const inputImagem = document.getElementById('imagem');
@@ -194,6 +197,7 @@
         const previewDescricao = document.getElementById('preview-descricao');
         const previewImg = document.getElementById('preview-img');
 
+        // Atualização dos Textos
         inputTitulo.addEventListener('input', () => {
             const txtLength = inputTitulo.value.length;
             document.getElementById('count-titulo').textContent = txtLength;
@@ -206,6 +210,7 @@
             previewDescricao.textContent = txtLength > 0 ? inputDescricao.value : 'A descrição digitada no formulário aparecerá aqui detalhando os descontos para o cliente final.';
         });
 
+        // Carregamento e leitura local do arquivo de imagem carregado pelo Admin
         inputImagem.addEventListener('change', function() {
             const arquivo = this.files[0];
             if (arquivo) {
@@ -219,6 +224,7 @@
             }
         });
 
+        // Resetar o Preview quando o formulário for limpo
         function resetarPreview() {
             previewTitulo.textContent = 'Título de Exemplo da Oferta';
             previewDescricao.textContent = 'A descrição digitada no formulário aparecerá aqui detalhando os descontos para o cliente final.';
@@ -227,13 +233,15 @@
             document.getElementById('count-descricao').textContent = '0';
         }
 
-        // CORREÇÃO: Trocado API_BASE por API_URL
+        /* ==========================================================================
+           COMUNICAÇÃO COM A API (CADASTRO / LISTAGEM / EXCLUSÃO)
+           ========================================================================== */
         document.getElementById('form-promocao').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
 
             try {
-                const res = await fetch(API_URL, { method: 'POST', body: formData });
+                const res = await fetch(API_BASE, { method: 'POST', body: formData });
                 if (!res.ok) throw new Error('Falha ao cadastrar item.');
                 
                 alert('Promoção publicada com sucesso!');
@@ -245,13 +253,12 @@
             }
         });
 
-        // CORREÇÃO: Trocado API_BASE por API_URL
         async function listarPromoçoesAdmin() {
             const tbody = document.getElementById('lista-promocoes-corpo');
             tbody.innerHTML = '<tr><td colspan="4">Carregando dados...</td></tr>';
 
             try {
-                const resposta = await fetch(API_URL);
+                const resposta = await fetch(API_BASE);
                 const dados = await resposta.json();
                 tbody.innerHTML = '';
 
@@ -275,12 +282,11 @@
             }
         }
 
-        // CORREÇÃO: Trocado API_BASE por API_URL
         async function deletarPromocao(id) {
             if(!confirm('Tem certeza de que deseja remover permanentemente este benefício do sistema?')) return;
 
             try {
-                const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
                 if(!res.ok) throw new Error();
                 alert('Item removido com sucesso!');
                 listarPromoçoesAdmin();
