@@ -107,6 +107,13 @@ app.delete('/api/promocoes/:id', async (req, res) => {
     }
 });
 
+// (Resto do código acima...)
+
+// 👉 ROTA DE SEGURANÇA: Qualquer link não reconhecido carrega a vitrine
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // Iniciar o servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
