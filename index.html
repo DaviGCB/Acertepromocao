@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcerteAqui - Benefícios e Promoções</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Barra de Navegação Superior Fina -->
+    <nav class="top-nav">
+        <div class="top-nav-container">
+            <a href="https://www.acerteaqui.com/" target="_blank" class="back-link">← Voltar para o site oficial</a>
+            <span class="nav-status">Ambiente Seguro</span>
+        </div>
+    </nav>
+
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="logo-destaque">Acerte</span>Aqui <span class="logo-sub">Benefícios</span>
+            </div>
+            
+            <div class="celebration-card">
+                <div class="celebration-icon">🎉</div>
+                <p class="header-subtitulo">Parabéns pela quitação da sua dívida! Você desbloqueou o acesso a estas ofertas exclusivas de nossos parceiros.</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="section-title-container">
+            <h2 class="section-title">Vitrine de Oportunidades</h2>
+            <p class="section-subtitle">Aproveite descontos e vantagens selecionadas para o seu novo momento financeiro.</p>
+        </div>
+
+        <!-- Grid de Promoções Otimizado para Telas Grandes -->
+        <div id="grid-promocoes" class="grid-promocoes">
+            <div class="skeleton-card">
+                <div class="skeleton-image"></div>
+                <div class="skeleton-text line-1"></div>
+                <div class="skeleton-text line-2"></div>
+            </div>
+            <div class="skeleton-card">
+                <div class="skeleton-image"></div>
+                <div class="skeleton-text line-1"></div>
+                <div class="skeleton-text line-2"></div>
+            </div>
+            <div class="skeleton-card">
+                <div class="skeleton-image"></div>
+                <div class="skeleton-text line-1"></div>
+                <div class="skeleton-text line-2"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 AcerteAqui. Todos os direitos reservados.</p>
+            <p class="footer-links">
+                Visite nosso site oficial: <a href="https://www.acerteaqui.com/" target="_blank">www.acerteaqui.com</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api/promocoes';
+        const IMAGE_FALLBACK = 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?q=80&w=600&auto=format&fit=crop';
+
+        async function carregarPromocoes() {
+            const grid = document.getElementById('grid-promocoes');
+
+            try {
+                const resposta = await fetch(API_URL);
+                if (!resposta.ok) throw new Error('Erro ao buscar dados do servidor.');
+                
+                const promocoes = await resposta.json();
+                const promocoesAtivas = promocoes.filter(promo => promo.ativa === true);
+
+                grid.innerHTML = '';
+
+                if (promocoesAtivas.length === 0) {
+                    grid.innerHTML = '<div class="no-promos">No momento não há promoções disponíveis. Volte mais tarde!</div>';
+                    return;
+                }
+
+                promocoesAtivas.forEach((promo, index) => {
+                    const containerCard = document.createElement('div');
+                    containerCard.className = 'promo-container';
+                    
+                    // Aplica um pequeno atraso (delay) baseado no índice para criar efeito cascata suave (Item 2)
+                    containerCard.style.animationDelay = `${index * 0.08}s`;
+
+                    const linkCard = document.createElement('a');
+                    linkCard.href = promo.link_destino;
+                    linkCard.target = '_blank';
+                    linkCard.className = 'promo-card-link';
+                    linkCard.title = `Aproveitar oferta: ${promo.titulo}`;
+
+                    const wrapperImagem = document.createElement('div');
+                    wrapperImagem.className = 'promo-image-wrapper';
+
+                    const badge = document.createElement('span');
+                    badge.className = 'promo-badge';
+                    badge.textContent = 'Exclusivo';
+
+                    const imagem = document.createElement('img');
+                    imagem.src = promo.url_imagem;
+                    imagem.alt = promo.descricao || promo.titulo;
+                    imagem.className = 'promo-imagem';
+                    imagem.loading = 'lazy';
+                    
+                    imagem.onerror = function() {
+                        this.onerror = null;
+                        this.src = IMAGE_FALLBACK;
+                    };
+
+                    wrapperImagem.appendChild(badge);
+                    wrapperImagem.appendChild(imagem);
+
+                    const infoBloco = document.createElement('div');
+                    infoBloco.className = 'promo-info-bloco';
+
+                    const tituloPromo = document.createElement('h3');
+                    tituloPromo.className = 'promo-titulo-interno';
+                    tituloPromo.textContent = promo.titulo;
+
+                    const descricaoPromo = document.createElement('p');
+                    descricaoPromo.className = 'promo-descricao-interna';
+                    descricaoPromo.textContent = promo.descricao || 'Clique para conferir os detalhes desta oferta incrível.';
+
+                    const ctaIndicator = document.createElement('div');
+                    ctaIndicator.className = 'promo-cta-indicator';
+                    ctaIndicator.innerHTML = '<span>Resgatar Benefício</span> <span class="arrow">→</span>';
+
+                    infoBloco.appendChild(tituloPromo);
+                    infoBloco.appendChild(descricaoPromo);
+                    infoBloco.appendChild(ctaIndicator);
+
+                    linkCard.appendChild(wrapperImagem);
+                    linkCard.appendChild(infoBloco);
+
+                    containerCard.appendChild(linkCard);
+                    grid.appendChild(containerCard);
+                });
+
+            } catch (erro) {
+                console.error(erro);
+                grid.innerHTML = '<div class="error-msg">Não foi possível carregar as promoções no momento. Por favor, tente novamente mais tarde.</div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarPromocoes);
+    </script>
+</body>
+</html>

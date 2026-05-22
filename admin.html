@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - AcerteAqui</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos complementares exclusivos do painel administrativo */
+        .form-group { margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
+        label { font-weight: 600; font-size: 0.9rem; color: #334155; }
+        input[type="text"], input[type="url"], textarea, select {
+            width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem;
+        }
+        .char-counter { font-size: 0.75rem; text-align: right; color: #64748b; margin-top: 0.2rem; }
+        .btn-submit { background-color: #00b4d8; color: #fff; font-weight: 700; border: none; padding: 0.8rem; border-radius: 6px; cursor: pointer; transition: background 0.2s; width: 100%; margin-top: 1rem; }
+        .btn-submit:hover { background-color: #0096c7; }
+        
+        /* Layout de duas colunas para o formulário + preview */
+        .admin-split-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .preview-sticky-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .preview-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Tabela administrativa */
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; background: white; }
+        .admin-table th, .admin-table td { padding: 0.75rem; border: 1px solid #e2e8f0; text-align: left; font-size: 0.9rem; }
+        .admin-table th { background-color: #f1f5f9; color: #0b2545; }
+        .btn-delete { background-color: #ef4444; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .btn-delete:hover { background-color: #dc2626; }
+        .img-thumb { width: 45px; height: 35px; object-fit: cover; border-radius: 4px; display: block; }
+
+        /* Responsividade do Split (Formulário ao lado do Preview no computador) */
+        @media (min-width: 850px) {
+            .admin-split-container {
+                grid-template-columns: 1.2fr 0.8fr;
+                align-items: start;
+            }
+            .preview-sticky-box {
+                position: sticky;
+                top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="top-nav-container">
+            <a href="index.html" class="back-link">← Ir para a Vitrine de Clientes</a>
+            <span style="color: #94a3b8;">Painel de Controle v2.1</span>
+        </div>
+    </nav>
+
+    <main class="container" style="max-width: 1100px;">
+        <div style="margin-bottom: 2.5rem;">
+            <h1 style="color: #0b2545; font-size: 2rem; font-weight: 800;">Gerenciador de Promoções</h1>
+            <p style="color: #64748b;">Cadastre, ative ou remova os cartões de benefícios exibidos para os usuários finais.</p>
+        </div>
+
+        <!-- Sistema de Abas Integrado -->
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="switchTab('cadastro')">Nova Promoção</button>
+            <button class="tab-btn" onclick="switchTab('gerenciamento')">Gerenciar Ativas</button>
+        </div>
+
+        <!-- ABA 1: Conteúdo do Cadastro + Preview em Tempo Real -->
+        <div id="tab-cadastro" class="tab-content active">
+            <div class="admin-split-container">
+                
+                <!-- Coluna do Formulário -->
+                <div class="admin-card">
+                    <form id="form-promocao" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="titulo">Título da Promoção</label>
+                            <input type="text" id="titulo" name="titulo" maxlength="45" required placeholder="Ex: 25% OFF na Assinatura Premium">
+                            <div class="char-counter"><span id="count-titulo">0</span>/45 caracteres</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descricao">Descrição Curta</label>
+                            <textarea id="descricao" name="descricao" rows="3" maxlength="110" required placeholder="Descreva sucintamente o benefício e as regras básicas de uso..."></textarea>
+                            <div class="char-counter"><span id="count-descricao">0</span>/110 caracteres</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="link_destino">Link de Destino Oficial (URL)</label>
+                            <input type="url" id="link_destino" name="link_destino" required placeholder="https://parceiro.com.br/cupom-acerteaqui">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="imagem">Imagem de Divulgação (Proporção recomendada 16:9)</label>
+                            <input type="file" id="imagem" name="imagem" accept="image/*" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ativa">Status Inicial</label>
+                            <select id="ativa" name="ativa">
+                                <option value="true">Ativa (Exibir imediatamente na Vitrine)</option>
+                                <option value="false">Inativa (Rascunho oculto)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Publicar Promoção</button>
+                    </form>
+                </div>
+
+                <!-- Coluna do Preview em Tempo Real (Espelha o estilo do index.html) -->
+                <div class="preview-sticky-box">
+                    <div class="preview-title">Visualização em Tempo Real (16:9)</div>
+                    
+                    <div class="promo-container" style="opacity: 1; animation: none;">
+                        <div class="promo-card-link" style="pointer-events: none;">
+                            <div class="promo-image-wrapper">
+                                <span class="promo-badge">Exclusivo</span>
+                                <img id="preview-img" src="https://images.unsplash.com/photo-1557200134-90327ee9fafa?q=80&w=600&auto=format&fit=crop" alt="Preview da Imagem" class="promo-imagem">
+                            </div>
+                            <div class="promo-info-bloco">
+                                <h3 id="preview-titulo" class="promo-titulo-interno">Título de Exemplo da Oferta</h3>
+                                <p id="preview-descricao" class="promo-descricao-interna">A descrição digitada no formulário aparecerá aqui detalhando os descontos para o cliente final.</p>
+                                <div class="promo-cta-indicator">
+                                    <span>Resgatar Benefício</span> <span class="arrow">→</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ABA 2: Conteúdo da Tabela de Gerenciamento -->
+        <div id="tab-gerenciamento" class="tab-content">
+            <div class="admin-card">
+                <h3 style="color: #0b2545; margin-bottom: 1rem;">Promoções Cadastradas</h3>
+                <div style="overflow-x: auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Miniatura</th>
+                                <th>Título</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-promocoes-corpo">
+                            <!-- Injeção via API -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api/promocoes';
+        const IMAGE_FALLBACK = 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?q=80&w=600&auto=format&fit=crop';
+
+        // Lógica de Alternância das Abas
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if(tabName === 'cadastro') {
+                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+                document.getElementById('tab-cadastro').classList.add('active');
+            } else {
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                document.getElementById('tab-gerenciamento').classList.add('active');
+                listarPromoçoesAdmin();
+            }
+        }
+
+        /* ==========================================================================
+           LÓGICA DO PREVIEW EM TEMPO REAL
+           ========================================================================== */
+        const inputTitulo = document.getElementById('titulo');
+        const inputDescricao = document.getElementById('descricao');
+        const inputImagem = document.getElementById('imagem');
+
+        const previewTitulo = document.getElementById('preview-titulo');
+        const previewDescricao = document.getElementById('preview-descricao');
+        const previewImg = document.getElementById('preview-img');
+
+        // Atualização dos Textos
+        inputTitulo.addEventListener('input', () => {
+            const txtLength = inputTitulo.value.length;
+            document.getElementById('count-titulo').textContent = txtLength;
+            previewTitulo.textContent = txtLength > 0 ? inputTitulo.value : 'Título de Exemplo da Oferta';
+        });
+
+        inputDescricao.addEventListener('input', () => {
+            const txtLength = inputDescricao.value.length;
+            document.getElementById('count-descricao').textContent = txtLength;
+            previewDescricao.textContent = txtLength > 0 ? inputDescricao.value : 'A descrição digitada no formulário aparecerá aqui detalhando os descontos para o cliente final.';
+        });
+
+        // Carregamento e leitura local do arquivo de imagem carregado pelo Admin
+        inputImagem.addEventListener('change', function() {
+            const arquivo = this.files[0];
+            if (arquivo) {
+                const leitor = new FileReader();
+                leitor.onload = function(e) {
+                    previewImg.src = e.target.result;
+                }
+                leitor.readAsDataURL(arquivo);
+            } else {
+                previewImg.src = IMAGE_FALLBACK;
+            }
+        });
+
+        // Resetar o Preview quando o formulário for limpo
+        function resetarPreview() {
+            previewTitulo.textContent = 'Título de Exemplo da Oferta';
+            previewDescricao.textContent = 'A descrição digitada no formulário aparecerá aqui detalhando os descontos para o cliente final.';
+            previewImg.src = IMAGE_FALLBACK;
+            document.getElementById('count-titulo').textContent = '0';
+            document.getElementById('count-descricao').textContent = '0';
+        }
+
+        /* ==========================================================================
+           COMUNICAÇÃO COM A API (CADASTRO / LISTAGEM / EXCLUSÃO)
+           ========================================================================== */
+        document.getElementById('form-promocao').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            try {
+                const res = await fetch(API_BASE, { method: 'POST', body: formData });
+                if (!res.ok) throw new Error('Falha ao cadastrar item.');
+                
+                alert('Promoção publicada com sucesso!');
+                e.target.reset();
+                resetarPreview();
+                switchTab('gerenciamento');
+            } catch (err) {
+                alert('Erro ao enviar dados para o servidor.');
+            }
+        });
+
+        async function listarPromoçoesAdmin() {
+            const tbody = document.getElementById('lista-promocoes-corpo');
+            tbody.innerHTML = '<tr><td colspan="4">Carregando dados...</td></tr>';
+
+            try {
+                const resposta = await fetch(API_BASE);
+                const dados = await resposta.json();
+                tbody.innerHTML = '';
+
+                if(dados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#64748b;">Nenhuma promoção cadastrada no sistema.</td></tr>';
+                    return;
+                }
+
+                dados.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><img src="${p.url_imagem}" class="img-thumb" alt="Thumb" onerror="this.src='${IMAGE_FALLBACK}'"></td>
+                        <td style="font-weight:600; color:#0b2545;">${p.titulo}</td>
+                        <td><span style="color:${p.ativa ? '#10b981' : '#64748b'}; font-weight:600;">${p.ativa ? 'Ativa' : 'Pausada'}</span></td>
+                        <td><button class="btn-delete" onclick="deletarPromocao('${p.id}')">Excluir</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="4" style="color:red;">Falha ao sincronizar dados.</td></tr>';
+            }
+        }
+
+        async function deletarPromocao(id) {
+            if(!confirm('Tem certeza de que deseja remover permanentemente este benefício do sistema?')) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+                if(!res.ok) throw new Error();
+                alert('Item removido com sucesso!');
+                listarPromoçoesAdmin();
+            } catch(err) {
+                alert('Erro ao deletar o registro.');
+            }
+        }
+    </script>
+</body>
+</html>

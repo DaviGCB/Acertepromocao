@@ -1,0 +1,473 @@
+/* ==========================================================================
+   RESET E CONFIGURAÇÕES GERAIS
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: #f8fafc; /* Tom off-white moderno e limpo */
+    color: #1e293b;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ==========================================================================
+   BARRA DE NAVEGAÇÃO & CABEÇALHO (BRANDING)
+   ========================================================================== */
+.top-nav {
+    background-color: #06152b;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.top-nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-link {
+    color: #94a3b8;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: #00b4d8;
+}
+
+.nav-status {
+    color: #10b981;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.nav-status::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #10b981;
+    border-radius: 50%;
+}
+
+/* Header com Gradiente Profundo */
+.header {
+    background: linear-gradient(135deg, #0b2545 0%, #071931 100%);
+    color: #ffffff;
+    padding: 3.5rem 1rem 4.5rem 1rem;
+    text-align: center;
+    position: relative;
+}
+
+.header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #00b4d8, #134074);
+}
+
+.header-container {
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 1.5rem;
+}
+
+.logo-destaque {
+    color: #00b4d8;
+}
+
+.logo-sub {
+    font-size: 1.1rem;
+    font-weight: 500;
+    background-color: rgba(0, 180, 216, 0.15);
+    color: #00b4d8;
+    padding: 0.2rem 0.8rem;
+    border-radius: 99px;
+    border: 1px solid rgba(0, 180, 216, 0.3);
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+
+/* Card de Celebração Flutuante */
+.celebration-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    padding: 1.2rem 1.5rem;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.celebration-icon {
+    font-size: 1.8rem;
+}
+
+.header-subtitulo {
+    font-size: 1.05rem;
+    color: #e2e8f0;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+/* ==========================================================================
+   TÍTULO DA SEÇÃO & ESTRUTURA PRINCIPAL
+   ========================================================================== */
+.container {
+    flex: 1;
+    max-width: 1400px;
+    width: 100%;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+}
+
+.section-title-container {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    color: #0b2545;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.section-subtitle {
+    color: #64748b;
+    font-size: 1rem;
+}
+
+/* Grid Fluido e Inteligente */
+.grid-promocoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   CARDS DE PROMOÇÃO & ANIMAÇÃO FADE-IN (Item 2)
+   ========================================================================== */
+.promo-container {
+    background-color: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(11, 37, 69, 0.04);
+    border: 1px solid #f1f5f9;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.4s ease;
+    width: 100%;
+    display: block;
+    
+    /* Ativadores do efeito de entrada suave */
+    opacity: 0;
+    animation: cardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Animação de entrada dos cards */
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.promo-container:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 30px rgba(11, 37, 69, 0.1);
+    border-color: rgba(0, 180, 216, 0.3);
+}
+
+.promo-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.promo-image-wrapper {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 16 / 9; 
+    width: 100%;
+    position: relative;
+    background-color: #f8fafc;
+}
+
+.promo-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background-color: #0b2545;
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.promo-imagem {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.promo-container:hover .promo-imagem {
+    transform: scale(1.04); 
+}
+
+.promo-info-bloco {
+    padding: 1.25rem;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1;
+}
+
+.promo-titulo-interno {
+    font-size: 1.1rem;
+    color: #0b2545;
+    font-weight: 700;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 2.8rem;
+}
+
+.promo-descricao-interna {
+    font-size: 0.9rem;
+    color: #64748b;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    height: 3.9rem;
+}
+
+.promo-cta-indicator {
+    margin-top: auto;
+    color: #00b4d8;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.6rem;
+    border-top: 1px solid #f1f5f9;
+    transition: color 0.2s ease;
+}
+
+.promo-cta-indicator .arrow {
+    transition: transform 0.3s ease;
+}
+
+.promo-container:hover .promo-cta-indicator {
+    color: #0096c7;
+}
+
+.promo-container:hover .promo-cta-indicator .arrow {
+    transform: translateX(4px);
+}
+
+/* ==========================================================================
+   ESTILIZAÇÃO DO SISTEMA DE ABAS (TABS - Item 1)
+   ========================================================================== */
+.admin-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tab-btn:hover {
+    color: #0b2545;
+    background-color: #f1f5f9;
+}
+
+.tab-btn.active {
+    color: #00b4d8;
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -0.6rem;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #00b4d8;
+    border-radius: 2px;
+}
+
+/* Controladores de visibilidade das abas */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: cardFadeIn 0.4s ease forwards;
+}
+
+/* Específico para o Admin Layout antigo condensado */
+.admin-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 2rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   ANIMAÇÃO DE SKELETON SCREEN
+   ========================================================================== */
+.skeleton-card {
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #f1f5f9;
+    padding: 0;
+    width: 100%;
+}
+
+.skeleton-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: loading-pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-text {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: loading-pulse 1.5s infinite ease-in-out;
+    border-radius: 4px;
+    margin: 1rem 1.25rem;
+}
+
+.skeleton-text.line-1 { height: 1.1rem; margin-bottom: 0.5rem; width: 65%; }
+.skeleton-text.line-2 { height: 0.85rem; margin-top: 0; width: 80%; }
+
+@keyframes loading-pulse {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Mensagens de Feedback */
+.no-promos, .error-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px dashed #cbd5e1;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.error-msg {
+    border-color: #fca5a5;
+    color: #ef4444;
+    background: #fef2f2;
+}
+
+/* ==========================================================================
+   RODAPÉ E CONSULTAS DE MÍDIA (RESPONSIVIDADE INTELIGENTE)
+   ========================================================================== */
+.footer {
+    background-color: #0f172a;
+    color: #94a3b8;
+    padding: 2.5rem 1rem;
+    font-size: 0.9rem;
+    border-top: 1px solid #1e293b;
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.footer a {
+    color: #00b4d8;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+@media (min-width: 768px) {
+    .grid-promocoes {
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 2rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .grid-promocoes {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2.2rem;
+    }
+}
